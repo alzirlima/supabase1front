@@ -1,7 +1,7 @@
 // URL base do back-end API.
 // IMPORTANTE: Altere este valor para o IP público da sua VM (AWS/Oracle) quando fizer o deploy em produção.
 // Exemplo: 'http://3.94.158.204:3000' ou o IP que sua VM receber.
-const API_BASE_URL = 'http://3.238.22.117';
+const API_BASE_URL = 'https://98.84.175.104/';
 
 // Elementos do DOM
 const productList = document.querySelector('#products');
