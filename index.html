@@ -1,27 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>Product CRUD</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD de Produtos - Cloud Admin</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <h1>Product CRUD</h1>
+  
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <h1>Cloud<span>Admin</span></h1>
+      </div>
+      <p class="subtitle">CRUD de Produtos - Projeto de Desenvolvimento de Software em Nuvem</p>
+    </header>
 
-  <form id="add-product-form">
-    <h2>Add Product</h2>
-    <label for="name">Name:</label>
-    <input type="text" id="name" name="name" required>
-    <label for="price">Price:</label>
-    <input type="number" id="price" name="price" required step="0.01">
-    <button type="submit">Add</button>
-  </form>
+    <!-- Main Content -->
+    <main class="app-main">
+      
+      <!-- Top Action Bar / Search Section -->
+      <section class="search-section card">
+        <div class="card-header">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <h2>Consultar Produto por ID</h2>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="search-id" placeholder="Digite o ID exato do produto...">
+          <button id="search-btn" class="btn btn-primary">Buscar</button>
+        </div>
+        <div id="search-result-container" class="search-result-container hidden">
+          <!-- Found product card will be injected here -->
+        </div>
+      </section>
 
-  <ul id="products"></ul>
+      <!-- Grid for Form and Products List -->
+      <div class="dashboard-grid">
+        
+        <!-- Sidebar / Add Product Form -->
+        <section class="form-section card">
+          <div class="card-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <h2>Cadastrar Produto</h2>
+          </div>
+          
+          <form id="add-product-form">
+            <div class="form-group">
+              <label for="name">Nome do Produto</label>
+              <input type="text" id="name" name="name" placeholder="Ex: Smart TV 55 pol" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="price">Preço (R$)</label>
+              <input type="number" id="price" name="price" placeholder="Ex: 2499.90" required step="0.01" min="0">
+            </div>
+            
+            <div class="form-group">
+              <label for="description">Descrição</label>
+              <textarea id="description" name="description" placeholder="Descreva os detalhes do produto..." rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-success btn-full">
+              Cadastrar Produto
+            </button>
+          </form>
+        </section>
 
+        <!-- Main Panel / Products List -->
+        <section class="products-section card">
+          <div class="card-header header-between">
+            <div class="header-title">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              <h2>Produtos Cadastrados</h2>
+            </div>
+            <span class="badge" id="product-count">0 produtos</span>
+          </div>
+
+          <!-- Loading Spinner -->
+          <div id="loading-spinner" class="loading-container hidden">
+            <div class="spinner"></div>
+            <p>Carregando produtos...</p>
+          </div>
+          
+          <!-- Empty State -->
+          <div id="empty-state" class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            <p>Nenhum produto cadastrado no momento.</p>
+          </div>
+
+          <ul id="products" class="products-list"></ul>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer-bar">
+      <p>Desenvolvimento de Software em Nuvem &copy; 2026</p>
+    </footer>
+
+  </div>
+
+  <!-- Update Modal (Edit Product) -->
+  <div id="update-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Editar Produto</h2>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <form id="update-product-form">
+        <input type="hidden" id="update-id">
+        
+        <div class="form-group">
+          <label for="update-name">Nome do Produto</label>
+          <input type="text" id="update-name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="update-price">Preço (R$)</label>
+          <input type="number" id="update-price" name="price" required step="0.01" min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="update-description">Descrição</label>
+          <textarea id="update-description" name="description" rows="3"></textarea>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancelar</button>
+          <button type="submit" class="btn btn-success">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Script links -->
   <script src="app.js"></script>
   <script>
-    // Call fetchProducts() when the page loads
-    window.addEventListener('load', fetchProducts);
+    // Iniciar carregamento dos produtos
+    window.addEventListener('DOMContentLoaded', fetchProducts);
   </script>
 </body>
 </html>
